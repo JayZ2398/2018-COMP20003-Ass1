@@ -1,3 +1,9 @@
+
+#define MAX_LINE_LEN 513
+#define MAX_STR_LEN 129
+#define OUTPUT_FIELDS 13
+#define FIELD_STR_LEN 7
+
 typedef char* string_t;
 
 typedef struct {
@@ -12,3 +18,6 @@ typedef struct node_t {
 
 node_t *makedict(data_t data);
 node_t *insert(node_t *parent, data_t data);
+void search(node_t *parent, string_t name, FILE *out);
+void free_dict(node_t *parent);
+void output_data(data_t *data, FILE *out);

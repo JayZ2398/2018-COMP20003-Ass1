@@ -3,54 +3,58 @@
 #include <string.h>
 #include "bst.h"
 
-#define MAX_LINE_LEN 512
-#define MAX_STR_LEN 128
-
 void read_to_data(data_t *data, string_t input);
 
 int main(int argc, char **argv) {
 
-  FILE *fp;
   string_t input = malloc(sizeof(char) * (MAX_LINE_LEN + 1));
-  string_t input_file = argv[1];
+  string_t input_file = argv[1], output_file = argv[2], name = argv[3];
   node_t *dict1 = NULL;
   data_t data;
+  FILE *fin = fopen(input_file, "r");
 
-  fp = fopen(input_file, "r");
-  while (fgets(input, MAX_LINE_LEN + 1, fp) != NULL) {
+  // Overwrite output.txt and reopen for appending
+  fclose(fopen("output.txt", "w"));
+  FILE *fout = fopen(output_file, "a");
+
+  fin = fopen(input_file, "r");
+  while (fgets(input, MAX_LINE_LEN + 1, fin) != NULL) {
     read_to_data(&data, input);
     dict1 = insert(dict1, data);
   }
+
+  search(dict1, name, fout);
+  free_dict(dict1);
+  fclose(fin), fclose(fout);
 
   return 0;
 }
 
 void read_to_data(data_t *data, string_t input) {
-  /* read a csv line from stdin into a data structure's members */
+  /* Read a csv line from stdin into a data structure's members.
+  */
 
-  // use i as index for building words, j as index for input string character
   string_t* member = (string_t*)data;
-  char c, word[MAX_STR_LEN];
-  int i = 0, j = 0;
+  char c, *temp_str = malloc(sizeof(char) * MAX_STR_LEN);
+  int letter_idx = 0, input_idx = 0;
 
-  for (j = 0; j < strlen(input); j++) {
-    c = input[j];
-    // Commas within double quotations case - to do later
+  // Iterate input string characters, store chars up to , in temp_str
+  for (input_idx = 0; input_idx < strlen(input); input_idx++) {
+  c = input[input_idx];
 
-    // If comma reached, store value in next data member
-    if (c == ',') {
-      word[i] = '\0';
-      // Copy current word to data
-      // strlen only counts the size of the word up to the null terminator
-      *member = malloc(sizeof(char) * strlen(word));
-      strcpy(*member, word);
-      i = 0, member++;
+    // If comma or end of line reached, copy temp string into struct
+    if (c == ',' || c == '\n') {
+      temp_str[letter_idx] = '\0';
+      //  Only chars up to and including '\0' in temp_str are copied.
+      *member = malloc(sizeof(char) * (strlen(temp_str) + 1));
+      strcpy(*member, temp_str);
+      letter_idx = 0, member++;
     }
-    // Otherwise, add character to current word
+    // Otherwise, add character to current string
     else {
-      word[i] = c;
-      i++;
+      temp_str[letter_idx++] = c;
     }
   }
+  free(temp_str);
   return;
 }
