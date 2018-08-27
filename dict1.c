@@ -4,26 +4,36 @@
 #include "bst.h"
 
 void read_to_data(data_t *data, string_t input);
+void strip_trailing_newline(string_t string);
 
 int main(int argc, char **argv) {
 
-  string_t input = malloc(sizeof(char) * (MAX_LINE_LEN + 1));
-  string_t input_file = argv[1], output_file = argv[2], name = argv[3];
   node_t *dict1 = NULL;
   data_t data;
-  FILE *fin = fopen(input_file, "r");
+  string_t input = malloc(sizeof(char) * (MAX_LINE_LEN + 1));
+  string_t input_file = argv[1], output_file = argv[2];
 
+  // File I/O
+  FILE *fin = fopen(input_file, "r");
   // Overwrite output.txt and reopen for appending
   fclose(fopen("output.txt", "w"));
   FILE *fout = fopen(output_file, "a");
 
-  fin = fopen(input_file, "r");
-  while (fgets(input, MAX_LINE_LEN + 1, fin) != NULL) {
+  while (fgets(input, MAX_LINE_LEN, fin) != NULL) {
     read_to_data(&data, input);
     dict1 = insert(dict1, data);
   }
 
-  search(dict1, name, fout);
+  int found_match = FALSE;
+  while (fgets(input, MAX_STR_LEN, stdin) != NULL) {
+    found_match = FALSE;
+    strip_trailing_newline(input);
+    search(dict1, input, fout, &found_match);
+    if (found_match == FALSE) {
+      fprintf(fout, "%s --> NOT FOUND\n\n", input);
+    }
+  }
+
   free_dict(dict1);
   fclose(fin), fclose(fout);
 
@@ -56,5 +66,13 @@ void read_to_data(data_t *data, string_t input) {
     }
   }
   free(temp_str);
+  return;
+}
+
+void strip_trailing_newline(string_t string) {
+  int end = strlen(string);
+  if (string[end - 1] == '\n') {
+    string[end - 1] = '\0';
+  }
   return;
 }

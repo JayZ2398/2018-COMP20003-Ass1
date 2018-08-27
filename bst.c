@@ -33,27 +33,27 @@ node_t *insert(node_t *parent, data_t data) {
   return parent;
 }
 
-void search(node_t *parent, string_t name, FILE* out) {
+void search(node_t *parent, string_t name, FILE *out, int *found_match) {
   /* Search a dictionary for a name, and output associated data on matches to
      a specified file.
   */
 
-  // Do nothing if parent is not a node
+  // Do nothing if parent is not an initialised node
   if (parent == NULL) {
     return;
   }
 
   // If parent's data.name matches search name, print data
   if (strcmp(parent->data.name, name) == 0) {
-    //printf("%s found at %p\n", parent->data.name, parent);
     output_data(&(parent->data), out);
+    *found_match = TRUE;
   }
 
   // Search children, regardless of whether match was found
   if (strcmp(parent->data.name, name) <= 0) {
-    search(parent->left, name, out);
+    search(parent->left, name, out, found_match);
   } else {
-    search(parent->right, name, out);
+    search(parent->right, name, out, found_match);
   }
   return;
 }
@@ -93,6 +93,6 @@ void output_data(data_t *data, FILE *out) {
   }
 
   // Add newline, output data to file
-  fprintf(out, "\n");
+  fprintf(out, "\n\n");
   return;
 }

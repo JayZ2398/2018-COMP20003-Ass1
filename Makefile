@@ -5,7 +5,7 @@ OFLAGS = -Wall -c
 all: run
 
 run: dict1
-	./dict1 Inputs/athlete_events_filtered.csv output.txt "Christine Jacoba Aaftink"
+	./dict1 Inputs/athlete_events_filtered.csv output.txt < name_list.txt
 
 dict1: dict1.c bst.o
 	$(CC) $(CFLAGS) dict1.c bst.o -o dict1
