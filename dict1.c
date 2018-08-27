@@ -5,6 +5,7 @@
 
 void read_to_data(data_t *data, string_t input);
 void strip_trailing_newline(string_t string);
+int counter(int delta, int key);
 
 int main(int argc, char **argv) {
 
@@ -26,9 +27,16 @@ int main(int argc, char **argv) {
 
   int found_match = FALSE;
   while (fgets(input, MAX_STR_LEN, stdin) != NULL) {
+    // Prepare input string for search
     found_match = FALSE;
     strip_trailing_newline(input);
+
+    // Reset counter for comparisons
+    counter(0, RESET);
     search(dict1, input, fout, &found_match);
+    // Output number of comparisons to stdout
+    fprintf(stdout, "%s --> %d\n", input, counter(0, RETURN));
+
     if (found_match == FALSE) {
       fprintf(fout, "%s --> NOT FOUND\n\n", input);
     }
@@ -70,9 +78,36 @@ void read_to_data(data_t *data, string_t input) {
 }
 
 void strip_trailing_newline(string_t string) {
+  /* Removes the newline character at the end of a string. Also Removes
+     carriage returns.
+  */
   int end = strlen(string);
-  if (string[end - 1] == '\n') {
+  if (strlen(string) > 2 && string[end - 2] == '\r') {
+    string[end - 2] = '\0';
+  } else if (string[end - 1] == '\n') {
     string[end - 1] = '\0';
   }
   return;
+}
+
+int counter(int delta, int key) {
+  /* Counter program for keeping track of comparisons in a section of code.
+  Different cases for key value:
+  - INCREMENT: increment counter
+  - RESET: reset counter
+  - RETURN: return counter value
+  */
+  static int counter = 0;
+
+  if (key == INCREMENT) {
+    counter += delta;
+  } else if (key == RETURN){
+    return counter;
+  } else if (key == RESET) {
+    counter = 0;
+  } else {
+    printf("Error! Invalid usage of counter function.\n");
+    exit(EXIT_FAILURE);
+  }
+  return 0;
 }

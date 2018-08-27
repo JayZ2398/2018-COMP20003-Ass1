@@ -55,6 +55,9 @@ void search(node_t *parent, string_t name, FILE *out, int *found_match) {
   } else {
     search(parent->right, name, out, found_match);
   }
+
+  // Increment comparison count for the 2 strcmp calls in every search call
+  counter(2, INCREMENT);
   return;
 }
 

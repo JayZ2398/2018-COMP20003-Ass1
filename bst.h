@@ -6,6 +6,11 @@
 #define TRUE 1
 #define FALSE 0
 
+// Counter definitions
+#define INCREMENT 0
+#define RESET 1
+#define RETURN 2
+
 typedef char* string_t;
 
 typedef struct {
