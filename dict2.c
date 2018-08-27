@@ -1,4 +1,4 @@
-/* Stage 1 dictionary function definitions
+/* Stage 2 dictionary function definitions
 */
 
 #include <string.h>
@@ -26,8 +26,11 @@ node_t *insert_dict(node_t *parent, data_t data) {
     return parent;
   }
 
+  int comparison = strcmp(parent->data.name, data.name);
   // Direct data down tree
-  if (strcmp(parent->data.name, data.name) <= 0) {
+  if (comparison == 0) {
+    parent->next = insert_dict(parent->next, data);
+  } else if (comparison < 0) {
     parent->left = insert_dict(parent->left, data);
   } else {
     parent->right = insert_dict(parent->right, data);
@@ -49,11 +52,13 @@ void search_dict(node_t *parent, string_t name, FILE *out, int *found_match) {
   // If parent's data.name matches search name, print data
   if (comparison == 0) {
     output_data(&(parent->data), out);
+    search_dict(parent->next, name, out, found_match);
     *found_match = TRUE;
+    return;
   }
 
   // Search children, regardless of whether match was found
-  if (comparison <= 0) {
+  if (comparison < 0) {
     search_dict(parent->left, name, out, found_match);
   } else {
     search_dict(parent->right, name, out, found_match);
