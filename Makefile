@@ -1,6 +1,5 @@
 CC = gcc
 CFLAGS = -Wall
-OFLAGS = -Wall -c
 
 all: run1 run2
 

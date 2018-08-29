@@ -57,7 +57,7 @@ void output_data(data_t *data, FILE *out) {
   }
 
   // Add newline, output data to file
-  fprintf(out, "\n\n");
+  fprintf(out, "\n");
   return;
 }
 
