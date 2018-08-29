@@ -26,11 +26,12 @@ typedef struct node_t{
 // Dictionary functions
 node_t *make_dict(data_t data);
 node_t *insert_dict(node_t *parent, data_t data);
-void search_dict(node_t *parent, string_t name, FILE *out, int *found_match);
+void search_dict(node_t *parent, string_t name, FILE *out, int *found_match,
+  int *counter);
 void free_dict(node_t *parent);
-void output_data(data_t *data, FILE *out);
+void free_data(data_t *data);
 
 // I/O and counter functions
 void read_data(data_t *data, string_t input);
 void strip_trailing_newline(string_t string);
-int counter(int delta, int key);
+void output_data(data_t *data, FILE *out);

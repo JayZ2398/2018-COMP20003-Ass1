@@ -31,7 +31,7 @@ def size_dataset(input_file, size):
     random.shuffle(csv_list)
     new_list = csv_list[:size]
     # Write to csv
-    outfile_name = "Data/{}_order_{}.csv".format(
+    outfile_name = "Data/{}_rando_{}.csv".format(
         filename(input_file), size)
     write_csv(outfile_name, new_list)
 
@@ -45,7 +45,7 @@ def size_dataset(input_file, size):
 
     # Write ordered data subset to output
     new_list = sorted(new_list, key=take_name)
-    outfile_name = "Data/{}_rando_{}.csv".format(
+    outfile_name = "Data/{}_order_{}.csv".format(
         filename(input_file), size)
     write_csv(outfile_name, new_list)
 
@@ -71,18 +71,6 @@ def total_key_comparisons(input_file):
     key_file.close()
     return comparisons
 
-def overall_program():
-    """Not sure yet."""
-
-    # For each sample size:
-        # For each dict1 and dict2
-            # For the ordered and random sets:
-                # Run the ordered sample through the program
-                # Use the 5 key tests, collect all the total comparisons
-                # Find average comparisons for ordered file (total comp/25)
-        # Store the sample-specific average comparisons for both dict1 and dict2, random and ordered
-    return
-
 def test_dataset(dataset):
     """For a dataset, run:
         - Each of its subset sample sizes through
@@ -92,17 +80,14 @@ def test_dataset(dataset):
        I.e. output a table with columns containing:
         sample_size, dict1 rand, dict2 rand, dict1 ordered, dict2 ordered"""
 
-    # Table = size, dict1 rand, dict2 rand, dict1 order, dict2 order
-    #for size in [range(10000, 50000, 10000), range(50000, 250000, 50000)]
-
     sizes = list(range(10000, 50000, 10000)) + list(range(50000,250001,50000))
-    table = []
+    table = [["size", "dict1 rand", "dict2 rand", "dict1 order", "dict2 order"]]
 
     for sample_size in sizes:
         row = [sample_size]
-        dict1_comps, dict2_comps = 0, 0
         for type in ["rando", "order"]:
-            for k in range(1,6):
+            dict1_comps, dict2_comps = 0, 0
+            for k in range(1,2):
                 # Print test being done
                 print("###TESTING: Size = {} || Key list = {} || Type = {} ".format(sample_size, k, type))
 
@@ -110,12 +95,10 @@ def test_dataset(dataset):
                 key_file = "Data/{}_key{}_{}.csv".format(filename(dataset), k, sample_size)
                 input_file = "Data/{}_{}_{}.csv".format(filename(dataset), type, sample_size)
 
-                # Run program
-                command = "{} {} output.txt < {} > dict1_comp.txt".format("dict1", input_file, key_file)
-                #print("###RUN: " + command)
+                # Run dict1 and dict2 tests
+                command = "{} {} output.txt < {} > dict1_comp.txt".format("./dict1", input_file, key_file)
                 system(command)
-                command = "{} {} output.txt < {} > dict2_comp.txt".format("dict2", input_file, key_file)
-                #print("###RUN: " + command)
+                command = "{} {} output.txt < {} > dict2_comp.txt".format("./dict2", input_file, key_file)
                 system(command)
 
                 # Collect output in current_output.txt
@@ -123,22 +106,14 @@ def test_dataset(dataset):
                 dict2_comps += total_key_comparisons("dict2_comp.txt")
                 #print("Comparisons = {}".format(total_key_comparisons("comparisons.txt")))
             # Add average key comps for type to row
-            row = [row, dict1_comps/5, dict1_comps/5]
+            row = row + [dict1_comps/5, dict2_comps/5]
         # Append row to table
-        table = [table, row]
+        table = table + [row]
+        print(table[0], "\n", table[-1])
     return table
 
 input_file = sys.argv[1]
 #make_datasets(input_file)
-table = test_dataset("athlete_events_filtered.csv")
+table = test_dataset(input_file)
 print(table)
-
-"""
-for size in range(start, stop + 1, step):
-    for exp in range(0, num_experiments):
-        data = size_dataset(csvdata, size)
-        # run ordered tests
-        # run random tests
-        # add average comparisons in each
-        # sort out keys somewhere
-"""
+write_csv("summary.csv", table)

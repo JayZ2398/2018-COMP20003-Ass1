@@ -1,7 +1,12 @@
 CC = gcc
 CFLAGS = -Wall
+OFLAGS = -Wall -g
 
 all: dict1 dict2
+
+debug:
+	$(CC) $(OFLAGS) main.c io.c dict1.c -o dict1
+	$(CC) $(OFLAGS) main.c io.c dict2.c -o dict2
 
 dict1: main.c io.c dict1.c
 	$(CC) $(CFLAGS) main.c io.c dict1.c -o dict1

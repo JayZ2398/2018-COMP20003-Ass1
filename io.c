@@ -74,26 +74,3 @@ void strip_trailing_newline(string_t string) {
   }
   return;
 }
-
-int counter(int delta, int key) {
-  /* Counter program for keeping track of comparisons in a section of code.
-  Different cases for key value:
-  - INCREMENT: increment counter
-  - RESET: reset counter
-  - RETURN: return counter value
-  */
-
-  static int counter = 0;
-
-  if (key == INCREMENT) {
-    counter += delta;
-  } else if (key == RETURN){
-    return counter;
-  } else if (key == RESET) {
-    counter = 0;
-  } else {
-    printf("Error! Invalid usage of counter function.\n");
-    exit(EXIT_FAILURE);
-  }
-  return 0;
-}
