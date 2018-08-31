@@ -5,12 +5,16 @@ from os.path import basename, splitext
 from os import system
 
 def take_name(elem):
+    """Take the name column from a .csv file as a key."""
     return elem[1]
 
 def filename(file):
+    """Return the filename (i.e. directory with no extentions or path) of
+    a given file."""
     return splitext(basename(file))[0]
 
 def write_csv(outfile_name, list):
+    """Write a list ([[row1], [row2], ...]) to a given file name."""
     outfile = open(outfile_name, 'w')
     writer = csv.writer(outfile)
     writer.writerows(list)
@@ -50,15 +54,9 @@ def size_dataset(input_file, size):
 
     return
 
-def make_datasets(input_file):
-    """Create a collection of test data of different sample sizes.
-    Small sizes are of 10,000 increments up to 50,000
-    Large sizes are of 50,000 increments up to 250,000."""
-    # Create small datasets
-    for sample_size in range(10000, 50000, 10000):
-        size_dataset(input_file, sample_size)
-    # Create large datsets
-    for sample_size in range(50000, 250001, 50000):
+def make_datasets(input_file, sizes):
+    """Create a collection of test data files of given sample sizes."""
+    for sample_size in sizes:
         size_dataset(input_file, sample_size)
     return
 
@@ -70,7 +68,7 @@ def total_key_comparisons(input_file):
     key_file.close()
     return comparisons
 
-def test_dataset(dataset):
+def test_dataset(dataset, sizes):
     """For a dataset, run:
         - Each of its subset sample sizes through
         - Each of the programs dict1, dict2 for
@@ -79,8 +77,6 @@ def test_dataset(dataset):
        I.e. output a table with columns containing:
         sample_size, dict1 rand, dict2 rand, dict1 ordered, dict2 ordered"""
 
-    #sizes = list(range(10000, 50000, 10000)) + list(range(50000,250001,50000))
-    sizes = list(range(50000,250001,50000))
     table = [["size", "dict1 rand", "dict2 rand", "dict1 order", "dict2 order"]]
 
     for sample_size in sizes:
@@ -109,11 +105,22 @@ def test_dataset(dataset):
             row = row + [dict1_comps/5, dict2_comps/5]
         # Append row to table
         table = table + [row]
-        print(table[0], "\n", table[-1])
+        print(table[0])
+        print(table[-1])
     return table
 
+# Read in large data file for testing from argv[1]
 input_file = sys.argv[1]
-make_datasets(input_file)
-table = test_dataset(input_file)
+# Create data subsets of given (hardcoded) sizes - change as you wish
+# Make sure the max subset size does not exceed the total number of data entries
+sizes = range(10000, 250001, 20000)
+make_datasets(input_file, sizes)
+
+# Test data sets
+table = test_dataset(input_file, sizes)
 print(table)
-write_csv("summary.csv", table)
+
+# Summarise average key comparisons for:
+# each sample size, each program, each ordered and randomised data
+output_file = filename(input_file) + "_summary.csv"
+write_csv(output_file, table)

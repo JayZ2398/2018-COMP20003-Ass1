@@ -20,19 +20,9 @@ node_t *insert_dict(node_t *parent, data_t data) {
   *  sorted by the <name> field.
   */
 
-  // Compare name to insert with last inserted name - if greater, store right
-  /*static node_t *last_node = NULL;
-  if (last_node != NULL) {
-    if (strcmp(last_node->data.name, data.name) > 0) {
-      last_node->right = insert_dict(last_node->right, data);
-      return parent;
-    }
-  }*/
-
   // If at leaf, assign data to node
   if (parent == NULL) {
     parent = make_dict(data);
-    //last_node = parent;
     return parent;
   }
 
