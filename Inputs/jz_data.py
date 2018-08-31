@@ -19,7 +19,7 @@ def write_csv(outfile_name, list):
 
 def size_dataset(input_file, size):
     """ Output a csv containing 'size' randomised entries, ordered entries
-    and return a list of 5 keys for testing."""
+    and return a list of keys for testing."""
 
     # Read in csv data and store as list, which can be randomised with .shuffle
     csv_file = open(input_file, "r")
@@ -35,13 +35,12 @@ def size_dataset(input_file, size):
         filename(input_file), size)
     write_csv(outfile_name, new_list)
 
-    # Create 5 test files each containing 5 randomised keys
-    for i in range(1,6):
-        random.shuffle(new_list)
-        keys = [[r[1]] for r in new_list[:5]]
-        outfile_name = "Data/{}_key{}_{}.csv".format(
-            filename(input_file), i, size)
-        write_csv(outfile_name, keys)
+    # Create a test file containing 5 randomised keys
+    random.shuffle(new_list)
+    keys = [[r[1]] for r in new_list[:5]]
+    outfile_name = "Data/{}_key{}_{}.csv".format(
+        filename(input_file), 1, size)
+    write_csv(outfile_name, keys)
 
     # Write ordered data subset to output
     new_list = sorted(new_list, key=take_name)
@@ -80,7 +79,8 @@ def test_dataset(dataset):
        I.e. output a table with columns containing:
         sample_size, dict1 rand, dict2 rand, dict1 ordered, dict2 ordered"""
 
-    sizes = list(range(10000, 50000, 10000)) + list(range(50000,250001,50000))
+    #sizes = list(range(10000, 50000, 10000)) + list(range(50000,250001,50000))
+    sizes = list(range(50000,250001,50000))
     table = [["size", "dict1 rand", "dict2 rand", "dict1 order", "dict2 order"]]
 
     for sample_size in sizes:
@@ -104,7 +104,7 @@ def test_dataset(dataset):
                 # Collect output in current_output.txt
                 dict1_comps += total_key_comparisons("dict1_comp.txt")
                 dict2_comps += total_key_comparisons("dict2_comp.txt")
-                #print("Comparisons = {}".format(total_key_comparisons("comparisons.txt")))
+
             # Add average key comps for type to row
             row = row + [dict1_comps/5, dict2_comps/5]
         # Append row to table
@@ -113,7 +113,7 @@ def test_dataset(dataset):
     return table
 
 input_file = sys.argv[1]
-#make_datasets(input_file)
+make_datasets(input_file)
 table = test_dataset(input_file)
 print(table)
 write_csv("summary.csv", table)

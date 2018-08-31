@@ -21,7 +21,9 @@ int main(int argc, char **argv) {
   FILE *fout = fopen(output_file, "a");
 
   // Read input data to dictionary
+  int data_points = 0;
   while (fgets(input, MAX_LINE_LEN, fin) != NULL) {
+    printf("###main.c $ read point %7d\n", data_points++);
     read_data(&data, input);
     dict = insert_dict(dict, data);
   }
