@@ -47,6 +47,7 @@ void search_dict(node_t *parent, string_t name, FILE *out,
   }
 
   int comparison = strcmp(parent->data.name, name);
+  *counter += 1;
   // If parent's data.name matches search name, print data
   if (comparison == 0) {
     output_data(&(parent->data), out);
@@ -61,7 +62,6 @@ void search_dict(node_t *parent, string_t name, FILE *out,
   }
 
   // Increment comparison count for the single strcmp call
-  *counter += 1;
   return;
 }
 
@@ -85,7 +85,8 @@ void free_data(data_t *data) {
   /* Free the strings that were dynamically allocated memory in a node's data_t.
   */
   string_t *string = (string_t *)data;
-  for (int i = 0; i < 15; i++) {
+  int i = 0;
+  for (i = 0; i < 15; i++) {
     free(*string);
     string++;
   }
