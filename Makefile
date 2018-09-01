@@ -5,7 +5,7 @@ OFLAGS = -Wall -g
 all: dict1 dict2
 
 test: dict1 dict2
-	cp dict1 dict2
+	cp dict1 dict2 Testing/
 
 debug:
 	$(CC) $(OFLAGS) main.c io.c dict1.c -o dict1
