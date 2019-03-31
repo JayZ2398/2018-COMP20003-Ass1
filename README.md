@@ -1,5 +1,7 @@
 # COMP20003-Ass1
-A project that implements a dictionary with binary search trees (with both standard and linked-list versions), then generates and runs tests on the search operation to determine the complexity of BSTs.
+Project implements a dictionary with binary search trees (with both standard and linked-list versions), then generates and runs tests on the search operation to determine the complexity of BSTs.
+
+A **summary report** of the findings on BST complexity is available in the root directory.
 
 ## Purpose
 The purpose of this project is to test the speed complexity of data depending on:
